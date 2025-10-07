@@ -10,6 +10,9 @@
     "format": "biome format --write"
   },
   "dependencies": {
+    "@tanstack/react-form": "^1.23.6",
+    "@tanstack/react-table": "^8.21.3",
+    "arktype": "^2.1.22",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "convex": "^1.27.4",
