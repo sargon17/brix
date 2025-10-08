@@ -2,6 +2,7 @@ import { Dashboard, DashboardActions, DashboardContent, DashboardHeader, Dashboa
 
 import { VendorTable } from "./_components/vendor-table";
 import { Button } from "@/components/ui/button";
+import CreateRequestForm from "./_components/requests/create-request-form";
 
 
 
@@ -11,7 +12,9 @@ export default function VendorsPage() {
       <DashboardHeader
         actionChildren={
           <DashboardActions>
-            <Button>test button</Button>
+            <CreateRequestForm>
+              <Button>Request a vendor</Button>
+            </CreateRequestForm>
           </DashboardActions>
         }
       >
