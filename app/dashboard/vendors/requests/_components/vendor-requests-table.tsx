@@ -36,6 +36,7 @@ import { CalendarClock, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CreateRequestForm from "../../_components/requests/create-request-form";
 import { dateFormatter } from "@/lib/utils";
+import DefaultTable from "@/components/organisms/default-table";
 
 type VendorRequestRow = Doc<"vendor_requests">;
 
@@ -152,52 +153,20 @@ export default function VendorRequestsTable() {
         />
       </div>
 
-      {!table.getRowCount() ? (
-        <EmptyTable
-          name={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-        />
-      ) : (
-        <div className="rounded-lg border border-border bg-card/40">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody className="*:odd:bg-zinc-50 *:odd:hover:bg-zinc-100 *:odd:dark:bg-zinc-900 dark:*:odd:hover:bg-zinc-800">
-              {table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-            <TableCaption className="px-4 pb-4 text-left">
-              Showing {tableData.length}{" "}
-              {tableData.length === 1 ? "request" : "requests"}
-            </TableCaption>
-          </Table>
-        </div>
-      )}
+      <DefaultTable<VendorRequestRow, Doc<"vendor_requests">>
+        data={data}
+        table={table}
+        emptyStateView={
+          <EmptyView
+            name={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          />
+        }
+      />
     </div>
   );
 }
 
-function EmptyTable({ name }: { name: string }) {
+function EmptyView({ name }: { name: string }) {
   return (
     <div className="h-full content-center">
       <Empty>

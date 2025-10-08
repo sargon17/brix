@@ -3,7 +3,6 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
 import {
-  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   useReactTable,
@@ -12,16 +11,6 @@ import { useQuery } from "convex/react";
 
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-  TableCaption,
-} from "@/components/ui/table";
-import { Skeleton } from "@/components/ui/skeleton";
 
 import {
   Empty,
@@ -37,6 +26,7 @@ import { dateFormatter } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
 import CreateRequestForm from "./requests/create-request-form";
+import DefaultTable from "@/components/organisms/default-table";
 
 type VendorRow = Doc<"vendors">;
 
@@ -104,7 +94,6 @@ const columns: ColumnDef<VendorRow>[] = [
   },
 ];
 
-const skeletonRows = Array.from({ length: 4 }, (_, index) => index);
 
 export function VendorTable() {
   const data = useQuery(api.vendors.list);
@@ -126,21 +115,6 @@ export function VendorTable() {
     getFilteredRowModel: getFilteredRowModel()
   });
 
-  if (data === undefined) {
-    return (
-      <div className="space-y-3 rounded-lg border border-border bg-card/40 p-4">
-        <div className="flex items-center justify-between">
-          <Skeleton className="h-6 w-40" />
-          <Skeleton className="h-6 w-24" />
-        </div>
-        <div className="space-y-2">
-          {skeletonRows.map((key) => (
-            <Skeleton key={key} className="h-10 w-full" />
-          ))}
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-4">
@@ -157,47 +131,22 @@ export function VendorTable() {
           } />
       </div>
 
-      {!table.getRowCount() ? (
-        <EmptyTable name={table.getColumn("name")?.getFilterValue() as string} />
-      ) : (
-        <div className="rounded-lg border border-border bg-card/40">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody className="*:odd:bg-zinc-50 *:odd:hover:bg-zinc-100 *:odd:dark:bg-zinc-900 dark:*:odd:hover:bg-zinc-800">
-              {table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-            <TableCaption className="text-left px-4 pb-4">
-              Showing {tableData.length} {tableData.length === 1 ? "vendor" : "vendors"}
-            </TableCaption>
-          </Table>
-        </div>
-      )}
+      <DefaultTable<VendorRow, Doc<"vendors">>
+        data={data}
+        table={table}
+        emptyStateView={
+          <EmptyView
+            name={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          />
+        }
+      />
+
     </div>
   );
 }
 
 
-function EmptyTable({ name }: { name: string }) {
+function EmptyView({ name }: { name: string }) {
   return (
     <div className="h-full content-center ">
       <Empty >
