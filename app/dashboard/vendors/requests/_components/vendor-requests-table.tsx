@@ -2,7 +2,6 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import {
-  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   useReactTable,
@@ -12,16 +11,6 @@ import { useQuery } from "convex/react";
 
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Empty,
   EmptyContent,
@@ -102,7 +91,6 @@ const columns: ColumnDef<VendorRequestRow>[] = [
   },
 ];
 
-const skeletonRows = Array.from({ length: 4 }, (_, index) => index);
 
 export default function VendorRequestsTable() {
   const data = useQuery(api.vendorRequests.list);
@@ -123,21 +111,6 @@ export default function VendorRequestsTable() {
     getFilteredRowModel: getFilteredRowModel(),
   });
 
-  if (data === undefined) {
-    return (
-      <div className="space-y-3 rounded-lg border border-border bg-card/40 p-4">
-        <div className="flex items-center justify-between">
-          <Skeleton className="h-6 w-40" />
-          <Skeleton className="h-6 w-24" />
-        </div>
-        <div className="space-y-2">
-          {skeletonRows.map((key) => (
-            <Skeleton key={key} className="h-10 w-full" />
-          ))}
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-4">
