@@ -36,6 +36,7 @@ import { Button } from "@/components/ui/button";
 import { dateFormatter } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
+import CreateRequestForm from "./requests/create-request-form";
 
 type VendorRow = Doc<"vendors">;
 
@@ -211,7 +212,9 @@ function EmptyTable({ name }: { name: string }) {
         </EmptyHeader>
         <EmptyContent>
           <div className="flex">
-            <Button>Request a Vendor</Button>
+            <CreateRequestForm>
+              <Button>Request a Vendor Onboarding</Button>
+            </CreateRequestForm>
           </div>
         </EmptyContent>
       </Empty >

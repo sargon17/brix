@@ -9,15 +9,12 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Field,
-  FieldContent,
   FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
   FieldLegend,
-  FieldSeparator,
   FieldSet,
-  FieldTitle,
 } from "@/components/ui/field"
 import {
   Dialog,
@@ -30,12 +27,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { api } from "@/convex/_generated/api";
 import type { DeepKeys } from "@tanstack/react-table";
 import { Textarea } from "@/components/ui/textarea";
-import { ScrollArea } from "@/components/ui/scroll-area";
+
+
+import { toast } from "sonner"
 
 const vendorRequestSchema = type({
   name: "string>2",
@@ -114,11 +112,14 @@ export default function CreateRequestForm({
         await createRequest(payload);
         formApi.reset();
         setOpen(false);
+        toast.info("Vendor onboarding request submitted successfully")
       } catch (error) {
-        // const message =
-        //   error instanceof Error
-        //     ? error.message
-        //     : "We cannot create the request right now.";
+        const message =
+          error instanceof Error
+            ? error.message
+            : "We cannot create the request right now.";
+
+        toast.error(message)
         throw error;
       }
     },
@@ -349,7 +350,7 @@ export default function CreateRequestForm({
         <FieldGroup className="gap-4">
           {renderTextArea({
             name: "justification",
-            label: "Justification",
+            label: "Notes for Brix reviewer",
             placeholder:
               "Describe why this vendor is critical for the project.",
           })}
@@ -374,8 +375,9 @@ export default function CreateRequestForm({
   const validateStep = async (step: StepConfig) => {
     let hasErrors = false;
     for (const field of step.fields) {
-      const fieldErrors = await form.validateField(field, "submit");
-      if (fieldErrors.length > 0) {
+      await form.validateField(field, "change");
+      const fieldMeta = form.getFieldMeta(field);
+      if (fieldMeta?.errors && fieldMeta.errors.length > 0) {
         hasErrors = true;
       }
     }
@@ -406,9 +408,16 @@ export default function CreateRequestForm({
         <Separator />
 
         <form
-          onSubmit={(event) => {
+          onSubmit={async (event) => {
             event.preventDefault();
-            void form.handleSubmit();
+            const step = steps[activeStep];
+            if (step) {
+              const canSubmit = await validateStep(step);
+              if (!canSubmit) {
+                return;
+              }
+            }
+            await form.handleSubmit();
           }}
         >
           <div className="flex items-center justify-between py-4 text-sm text-muted-foreground">

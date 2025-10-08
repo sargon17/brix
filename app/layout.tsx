@@ -6,6 +6,9 @@ import type { Metadata } from "next";
 import { ConvexClientProvider } from "@/components/providers/convex-provider";
 import ThemeProvider from "@/components/providers/theme-provider";
 
+import { Toaster } from "@/components/ui/sonner"
+
+
 const soraSans = Sora({
   variable: "--font-sora",
   subsets: ["latin"],
@@ -31,6 +34,7 @@ export default async function RootLayout({
           <ConvexClientProvider>
             <main className="h-svh">
               {children}
+              <Toaster />
             </main>
           </ConvexClientProvider>
         </ThemeProvider>
