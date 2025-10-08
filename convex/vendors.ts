@@ -31,8 +31,6 @@ export const list = query(async ({ db }) => {
     requestMap.set(vendorId, counts);
   }
 
-  return []
-
   return vendors.map((vendor) => {
     const counts = requestMap.get(vendor._id) ?? {
       total: 0,
