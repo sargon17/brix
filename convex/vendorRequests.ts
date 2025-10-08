@@ -1,21 +1,11 @@
-import { mutation } from "./_generated/server";
+import { normalizeObject } from "@/lib/utils";
+import { Doc } from "./_generated/dataModel";
+import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
-type HeadquartersInput = {
-  addressLine1?: string;
-  addressLine2?: string;
-  city?: string;
-  region?: string;
-  postalCode?: string;
-  country?: string;
-};
 
-type ContactInput = {
-  name: string;
-  role?: string;
-  email?: string;
-  phone?: string;
-};
+type HeadquartersInput = Doc<"vendor_requests">["headquarters"]
+type ContactInput = Doc<"vendor_requests">["primaryContact"]
 
 export const create = mutation({
   args: {
@@ -44,14 +34,6 @@ export const create = mutation({
         phone: v.optional(v.string()),
       })
     ),
-    secondaryContact: v.optional(
-      v.object({
-        name: v.optional(v.string()),
-        role: v.optional(v.string()),
-        email: v.optional(v.string()),
-        phone: v.optional(v.string()),
-      })
-    ),
     justification: v.string(),
     projectName: v.optional(v.string()),
     requestedById: v.optional(v.id("users")),
@@ -74,21 +56,17 @@ export const create = mutation({
       throw new Error("Unable to resolve requester for vendor request.");
     }
 
-    const cleanedHeadquarters = normalizeObject<HeadquartersInput>(
+    const cleanedHeadquarters = normalizeObject<HeadquartersInput | undefined>(
       request.headquarters
     );
-    const cleanedPrimary = normalizeObject<ContactInput>(
+    const cleanedPrimary = normalizeObject<ContactInput | undefined>(
       request.primaryContact
-    );
-    const cleanedSecondary = normalizeObject<ContactInput>(
-      request.secondaryContact
     );
 
     return await db.insert("vendor_requests", {
       ...request,
       headquarters: cleanedHeadquarters,
       primaryContact: cleanedPrimary,
-      secondaryContact: cleanedSecondary,
       requestedBy: requester,
       requestedAt: Date.now(),
       status: "pending",
@@ -96,23 +74,18 @@ export const create = mutation({
   },
 });
 
-function normalizeObject<T extends Record<string, unknown> | undefined>(
-  value: T
-) {
-  if (!value) {
-    return undefined;
-  }
+export const list = query(async ({ db }) => {
 
-  const filteredEntries = Object.entries(value).filter(
-    ([, fieldValue]) =>
-      fieldValue !== undefined &&
-      fieldValue !== null &&
-      fieldValue !== ""
-  );
+  const user = await db.query("users")
+  .filter(q =>
+    q.eq(q.field('role'), 'buyer')
+  ).first()
 
-  if (filteredEntries.length === 0) {
-    return undefined;
-  }
+  const requests = await db.query("vendor_requests")
+  .filter(
+    q => q.eq(q.field("requestedBy"), user?._id)
+  )
+  .collect();
 
-  return Object.fromEntries(filteredEntries) as NonNullable<T>;
-}
+  return requests;
+});
