@@ -1,15 +1,17 @@
 "use client";
 
-import { useMemo } from "react";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useMemo } from "react";
 import {
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import { useQuery } from "convex/react";
 
 import { api } from "@/convex/_generated/api";
+import type { Doc } from "@/convex/_generated/dataModel";
 import {
   Table,
   TableBody,
@@ -31,35 +33,11 @@ import {
 } from "@/components/ui/empty"
 import { Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { dateFormatter } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+import { Label } from "@radix-ui/react-label";
 
-type VendorRow = {
-  id: string;
-  name: string;
-  vatNumber: string | null;
-  industry: string | null;
-  categories: string[];
-  complianceStatus: "verified" | "pending" | "expired" | "unknown";
-  lifespanStatus: "active" | "inactive" | "archived";
-  sourcingChannel: "catalog" | "imported" | "manual";
-  createdAt: number;
-  updatedAt: number | null;
-  primaryContact: {
-    name?: string;
-    email?: string;
-    phone?: string;
-  } | null;
-  requestCounts: {
-    total: number;
-    pending: number;
-    approved: number;
-  };
-};
-
-const dateFormatter = new Intl.DateTimeFormat("en-GB", {
-  day: "numeric",
-  month: "short",
-  year: "numeric",
-});
+type VendorRow = Doc<"vendors">;
 
 const columns: ColumnDef<VendorRow>[] = [
   {
@@ -80,46 +58,8 @@ const columns: ColumnDef<VendorRow>[] = [
     },
   },
   {
-    header: "Compliance",
-    accessorKey: "complianceStatus",
-    cell: ({ getValue }) => {
-      const status = getValue() as VendorRow["complianceStatus"];
-      const labelMap: Record<VendorRow["complianceStatus"], string> = {
-        verified: "Verified",
-        pending: "Pending",
-        expired: "Expired",
-        unknown: "Unknown",
-      };
-      const colorMap: Record<VendorRow["complianceStatus"], string> = {
-        verified: "bg-emerald-500/10 text-emerald-500 ring-emerald-500/20",
-        pending: "bg-amber-500/10 text-amber-500 ring-amber-500/20",
-        expired: "bg-rose-500/10 text-rose-500 ring-rose-500/20",
-        unknown: "bg-muted text-muted-foreground ring-muted/30",
-      };
-
-      return (
-        <span
-          className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset ${colorMap[status]}`}
-        >
-          <span className="size-1.5 rounded-full bg-current" />
-          {labelMap[status]}
-        </span>
-      );
-    },
-  },
-  {
-    header: "Channel",
-    accessorKey: "sourcingChannel",
-    cell: ({ getValue }) => {
-      const channel = getValue() as VendorRow["sourcingChannel"];
-      const label =
-        channel === "manual"
-          ? "Manual"
-          : channel === "imported"
-            ? "Imported"
-            : "Catalog";
-      return <span className="text-sm text-muted-foreground">{label}</span>;
-    },
+    header: "VAT number",
+    accessorKey: "vatNumber"
   },
   {
     header: "Contact",
@@ -141,30 +81,14 @@ const columns: ColumnDef<VendorRow>[] = [
     },
   },
   {
-    header: "Requests",
-    accessorKey: "requestCounts",
-    cell: ({ row }) => {
-      const counts = row.original.requestCounts;
-      if (!counts.total) {
-        return <span className="text-muted-foreground">No linked requests</span>;
-      }
-
-      return (
-        <div className="text-sm">
-          <span className="font-medium">{counts.total}</span>{" "}
-          <span className="text-muted-foreground">
-            total
-            {counts.pending ? ` • ${counts.pending} pending` : ""}
-          </span>
-        </div>
-      );
-    },
+    header: "Headquarter",
+    accessorFn: (val => `${val.headquarters?.city}, ${val.headquarters?.country}`)
   },
   {
     header: "Last updated",
     accessorKey: "updatedAt",
     cell: ({ row }) => {
-      const timestamp = row.original.updatedAt ?? row.original.createdAt;
+      const timestamp = row.original.updatedAt ?? row.original._creationTime;
       const date = new Date(timestamp);
 
       return (
@@ -184,17 +108,12 @@ const skeletonRows = Array.from({ length: 4 }, (_, index) => index);
 export function VendorTable() {
   const data = useQuery(api.vendors.list);
 
+
   const tableData = useMemo<VendorRow[]>(
     () =>
       (data ?? []).map((row) => ({
         ...row,
-        id: String(row.id),
-        complianceStatus:
-          row.complianceStatus === "verified" ||
-            row.complianceStatus === "pending" ||
-            row.complianceStatus === "expired"
-            ? row.complianceStatus
-            : "unknown",
+        id: String(row._id),
       })),
     [data]
   );
@@ -203,6 +122,7 @@ export function VendorTable() {
     data: tableData,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel()
   });
 
   if (data === undefined) {
@@ -221,47 +141,62 @@ export function VendorTable() {
     );
   }
 
-  if (!tableData.length) {
-    return (<EmptyTable />)
-  }
-
   return (
-    <div className="rounded-lg border border-border bg-card/40 p-4">
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(header.column.columnDef.header, header.getContext())}
-                </TableHead>
+    <div className="space-y-4">
+      <div
+        className="max-w-xl"
+      >
+        <Label htmlFor="search">Search Vendor</Label>
+        <Input
+          id="search"
+          placeholder="Vendor"
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("name")?.setFilterValue(event.target.value)
+          } />
+      </div>
+
+      {!table.getRowCount() ? (
+        <EmptyTable name={table.getColumn("name")?.getFilterValue() as string} />
+      ) : (
+        <div className="rounded-lg border border-border bg-card/40">
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(header.column.columnDef.header, header.getContext())}
+                    </TableHead>
+                  ))}
+                </TableRow>
               ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
+            </TableHeader>
+            <TableBody className="*:odd:bg-zinc-50 *:odd:hover:bg-zinc-100 *:odd:dark:bg-zinc-900 dark:*:odd:hover:bg-zinc-800">
+              {table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
               ))}
-            </TableRow>
-          ))}
-        </TableBody>
-        <TableCaption className="text-left">
-          Showing {tableData.length} {tableData.length === 1 ? "vendor" : "vendors"} • synced from Convex
-        </TableCaption>
-      </Table>
+            </TableBody>
+            <TableCaption className="text-left px-4 pb-4">
+              Showing {tableData.length} {tableData.length === 1 ? "vendor" : "vendors"}
+            </TableCaption>
+          </Table>
+        </div>
+      )}
     </div>
   );
 }
 
 
-function EmptyTable() {
+function EmptyTable({ name }: { name: string }) {
   return (
     <div className="h-full content-center ">
       <Empty >
@@ -269,7 +204,7 @@ function EmptyTable() {
           <EmptyMedia variant="icon">
             <Building2 />
           </EmptyMedia>
-          <EmptyTitle>Vendor Not Found</EmptyTitle>
+          <EmptyTitle>Vendor {name} Not Found</EmptyTitle>
           <EmptyDescription>
             Can't find the vendor you're looking for? You can request it to be added to the catalog..
           </EmptyDescription>
