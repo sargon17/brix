@@ -45,7 +45,7 @@ export default function Home() {
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button asChild>
                 <Link
-                  href="/vendors"
+                  href="/dashboard/vendors"
                   prefetch
                 >
                   View the vendors concept
