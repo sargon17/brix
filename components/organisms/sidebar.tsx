@@ -13,6 +13,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import ThemeTabs from "./theme-tabs";
+import Link from "next/link";
 
 
 
@@ -25,7 +26,7 @@ const items = [
   },
   {
     title: "Vendors",
-    url: "/vendors",
+    url: "/dashboard/vendors",
     icon: Building2,
   },
   {
@@ -64,10 +65,10 @@ export function AppSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                    <Link href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

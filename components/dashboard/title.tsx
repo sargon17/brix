@@ -8,7 +8,7 @@ export default function DashboardTitle({ children }: DashboardTitleProps) {
   return (
     <div className="flex items-center gap-2">
       <SidebarTrigger />
-      <h1 className="text-3xl font-semibold tracking-tight text-foreground">
+      <h1 className="text-3xl font-semibold  text-foreground">
         {children}
       </h1>
     </div>
