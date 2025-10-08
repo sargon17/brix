@@ -12,6 +12,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import ThemeTabs from "./theme-tabs";
 
 
 
@@ -75,7 +76,9 @@ export function AppSidebar() {
         </SidebarGroup>
         {/* <SidebarGroup /> */}
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarFooter>
+        <ThemeTabs />
+      </SidebarFooter>
     </Sidebar>
   )
 }

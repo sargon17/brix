@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 
 
 import { ConvexClientProvider } from "@/components/providers/convex-provider";
+import ThemeProvider from "@/components/providers/theme-provider";
 
 const soraSans = Sora({
   variable: "--font-sora",
@@ -26,11 +27,13 @@ export default async function RootLayout({
       <body
         className={`${soraSans.variable} antialiased`}
       >
-        <ConvexClientProvider>
-          <main className="h-svh">
-            {children}
-          </main>
-        </ConvexClientProvider>
+        <ThemeProvider>
+          <ConvexClientProvider>
+            <main className="h-svh">
+              {children}
+            </main>
+          </ConvexClientProvider>
+        </ThemeProvider>
       </body>
     </html >
   );
