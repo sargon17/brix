@@ -1,3 +1,4 @@
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -5,16 +6,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  TableCaption,
 } from "@/components/ui/table";
-import { Skeleton } from "@/components/ui/skeleton";
 
 import {
   flexRender,
 } from "@tanstack/react-table";
 
 import type { Table as TableType } from "@tanstack/react-table";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 interface DefaultTypeProps<T, R> {
   data?: R[]
