@@ -89,3 +89,88 @@ export const list = query(async ({ db }) => {
 
   return requests;
 });
+
+
+export const listPending = query(async ({ db }) => {
+  const requests = await db.query("vendor_requests")
+  .filter(
+    q => q.eq(q.field("status"), "pending")
+  )
+  .collect();
+
+  return requests;
+});
+
+export const listAll = query(async ({ db }) => {
+  const requests = await db.query("vendor_requests").collect();
+  return requests;
+});
+
+export const updateStatus = mutation({
+  args: {
+    requestId: v.id("vendor_requests"),
+    status: v.union(v.literal("approved"), v.literal("rejected")),
+    decisionNotes: v.optional(v.string()),
+  },
+  handler: async ({ db }, { requestId, status, decisionNotes }) => {
+    const request = await db.get(requestId);
+    if (!request) {
+      throw new Error("Vendor request not found.");
+    }
+
+    const reviewer =
+      (await db
+        .query("users")
+        .filter((q) => q.eq(q.field("role"), "admin"))
+        .first()) ?? null;
+
+    if (!reviewer) {
+      throw new Error("Unable to resolve reviewer for vendor request.");
+    }
+
+    const now = Date.now();
+    const patch: Partial<Doc<"vendor_requests">> = {
+      status,
+      reviewedBy: reviewer._id,
+      reviewedAt: now,
+    };
+
+    if (status === "approved") {
+      let linkedVendorId = request.linkedVendorId;
+
+      if (!linkedVendorId) {
+        const newVendor: Omit<Doc<"vendors">, "_id"> = {
+          name: request.name,
+          vatNumber: request.vatNumber,
+          registrationId: request.registrationId,
+          website: request.website,
+          headquarters: request.headquarters,
+          industry: request.industry,
+          categories: request.categories,
+          yearFounded: request.yearFounded,
+          primaryContact: request.primaryContact,
+          secondaryContact: request.secondaryContact,
+          notes: request.justification,
+          createdBy: reviewer._id,
+          updatedAt: now,
+          updatedBy: reviewer._id,
+        };
+
+        linkedVendorId = await db.insert("vendors", newVendor);
+      } else {
+        await db.patch(linkedVendorId, {
+          updatedAt: now,
+          updatedBy: reviewer._id,
+        });
+      }
+
+      patch.linkedVendorId = linkedVendorId;
+    }
+
+    if (decisionNotes !== undefined) {
+      patch.decisionNotes = decisionNotes;
+    }
+
+    await db.patch(requestId, patch);
+  },
+});

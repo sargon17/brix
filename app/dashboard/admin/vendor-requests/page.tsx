@@ -1,13 +1,13 @@
-import { Button } from "@/components/ui/button";
 
 import {
   Dashboard,
-  DashboardActions,
   DashboardContent,
   DashboardHeader,
   DashboardSubtitle,
   DashboardTitle
 } from "@/components/dashboard";
+
+import VendorRequestsTable from "./_components/vendor-request-table";
 
 export default function VendorsPage() {
   return (
@@ -24,7 +24,7 @@ export default function VendorsPage() {
         </DashboardSubtitle>
       </DashboardHeader >
       <DashboardContent>
-        {/* <VendorRequestsTable /> */}
+        <VendorRequestsTable />
       </DashboardContent>
     </Dashboard >
 

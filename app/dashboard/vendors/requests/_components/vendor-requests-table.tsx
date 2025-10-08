@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/empty";
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
-import { CalendarClock, ClipboardList } from "lucide-react";
+import { Building2, CalendarClock, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CreateRequestForm from "../../_components/requests/create-request-form";
 import { dateFormatter } from "@/lib/utils";
@@ -145,7 +145,7 @@ function EmptyView({ name }: { name: string }) {
       <Empty>
         <EmptyHeader>
           <EmptyMedia variant="icon">
-            {name ? <ClipboardList /> : <CalendarClock />}
+            <Building2 />
           </EmptyMedia>
           <EmptyTitle>
             {name ? `No requests for "${name}"` : "No vendor requests yet"}
