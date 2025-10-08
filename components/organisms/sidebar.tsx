@@ -1,4 +1,6 @@
-import { Building2, Calendar, Home, Search, Settings } from "lucide-react"
+"use client"
+
+import { Building2, Home } from "lucide-react"
 
 import {
   Sidebar,
@@ -14,39 +16,43 @@ import {
 } from "@/components/ui/sidebar"
 import ThemeTabs from "./theme-tabs";
 import Link from "next/link";
+import ProfileSwitcher from "./profile-switcher";
+import { useProfileStore } from "@/store/profile-store";
 
 
 
-// Menu items.
-const items = [
+const commonMenu = [
   {
     title: "Home",
     url: "/",
     icon: Home,
   },
+]
+
+const buyerMenu = [
+  ...commonMenu,
   {
     title: "Vendors",
     url: "/dashboard/vendors",
     icon: Building2,
   },
-  {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
-  },
-  {
-    title: "Search",
-    url: "#",
-    icon: Search,
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
-  },
 ];
 
+const adminMenu = [
+  ...commonMenu,
+  {
+    title: "Vendors requests",
+    url: "/dashboard/admin/vendor-requests",
+    icon: Building2,
+  },
+]
+
 export function AppSidebar() {
+
+  const { profile } = useProfileStore((state) => state)
+
+  const menu = profile === "admin" ? adminMenu : buyerMenu
+
   return (
     <Sidebar>
       <SidebarHeader >
@@ -62,7 +68,7 @@ export function AppSidebar() {
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              {menu.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <Link href={item.url}>
@@ -75,7 +81,12 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        {/* <SidebarGroup /> */}
+        <SidebarGroup>
+          <SidebarGroupLabel>User type</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <ProfileSwitcher />
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
         <ThemeTabs />
