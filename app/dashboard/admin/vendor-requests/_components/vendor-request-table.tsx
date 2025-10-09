@@ -29,22 +29,28 @@ import { TooltipTrigger } from "@radix-ui/react-tooltip";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-
 type VendorRequestRow = Doc<"vendor_requests">;
-const STATUS_FILTERS = ["all", "pending", "reviewing", "approved", "rejected"] as const;
+const STATUS_FILTERS = [
+  "all",
+  "pending",
+  "reviewing",
+  "approved",
+  "rejected",
+] as const;
 type StatusFilter = (typeof STATUS_FILTERS)[number];
-
 
 export default function VendorRequestsTable() {
   const data = useQuery(api.vendorRequests.listAll);
   const updateStatus = useMutation(api.vendorRequests.updateStatus);
-  const [processingId, setProcessingId] = useState<Id<"vendor_requests"> | null>(
-    null,
-  );
+  const [processingId, setProcessingId] =
+    useState<Id<"vendor_requests"> | null>(null);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("pending");
 
   const handleDecision = useCallback(
-    async (requestId: Id<"vendor_requests">, status: "approved" | "rejected") => {
+    async (
+      requestId: Id<"vendor_requests">,
+      status: "approved" | "rejected",
+    ) => {
       try {
         setProcessingId(requestId);
         await updateStatus({ requestId, status });
@@ -72,8 +78,8 @@ export default function VendorRequestsTable() {
               <span className="text-xs text-muted-foreground">
                 {request.justification
                   ? request.justification
-                    .slice(0, 80)
-                    .concat(request.justification.length > 80 ? "..." : "")
+                      .slice(0, 80)
+                      .concat(request.justification.length > 80 ? "..." : "")
                   : "No justification provided"}
               </span>
             </div>
@@ -127,7 +133,6 @@ export default function VendorRequestsTable() {
 
           return (
             <div className="flex space-x-2">
-
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
@@ -191,7 +196,6 @@ export default function VendorRequestsTable() {
     getFilteredRowModel: getFilteredRowModel(),
   });
 
-
   return (
     <div className="space-y-4">
       <div className="max-w-xl">
@@ -226,7 +230,9 @@ export default function VendorRequestsTable() {
             table={table}
             emptyStateView={
               <EmptyView
-                name={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+                name={
+                  (table.getColumn("name")?.getFilterValue() as string) ?? ""
+                }
               />
             }
           />

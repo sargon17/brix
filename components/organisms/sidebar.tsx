@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Building2, Home } from "lucide-react"
+import { Building2, Home } from "lucide-react";
 
 import {
   Sidebar,
@@ -13,13 +13,11 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 import ThemeTabs from "./theme-tabs";
 import Link from "next/link";
 import ProfileSwitcher from "./profile-switcher";
 import { useProfileStore } from "@/store/profile-store";
-
-
 
 const commonMenu = [
   {
@@ -27,7 +25,7 @@ const commonMenu = [
     url: "/",
     icon: Home,
   },
-]
+];
 
 const buyerMenu = [
   ...commonMenu,
@@ -41,30 +39,31 @@ const buyerMenu = [
 const adminMenu = [
   ...commonMenu,
   {
-    title: "Vendors requests",
+    title: "Vendor requests",
     url: "/dashboard/admin/vendor-requests",
     icon: Building2,
   },
-]
+];
 
 export function AppSidebar() {
+  const { profile } = useProfileStore((state) => state);
 
-  const { profile } = useProfileStore((state) => state)
-
-  const menu = profile === "admin" ? adminMenu : buyerMenu
+  const menu = profile === "admin" ? adminMenu : buyerMenu;
 
   return (
     <Sidebar>
-      <SidebarHeader >
+      <SidebarHeader>
         <div>
           <h1 className="font-black text-2xl">
             brix <span className="italic font-normal text-blue-500">demo</span>
           </h1>
-          <h2 className="text-secondary-foreground text-xs">by <a href="https://tymofyeyev.com/">tymofyeyev.com</a></h2>
+          <h2 className="text-secondary-foreground text-xs">
+            by <a href="https://tymofyeyev.com/">tymofyeyev.com</a>
+          </h2>
         </div>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup >
+        <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -92,5 +91,5 @@ export function AppSidebar() {
         <ThemeTabs />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

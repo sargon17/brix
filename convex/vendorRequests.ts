@@ -3,9 +3,8 @@ import { Doc } from "./_generated/dataModel";
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
-
-type HeadquartersInput = Doc<"vendor_requests">["headquarters"]
-type ContactInput = Doc<"vendor_requests">["primaryContact"]
+type HeadquartersInput = Doc<"vendor_requests">["headquarters"];
+type ContactInput = Doc<"vendor_requests">["primaryContact"];
 
 export const create = mutation({
   args: {
@@ -21,7 +20,7 @@ export const create = mutation({
         region: v.optional(v.string()),
         postalCode: v.optional(v.string()),
         country: v.optional(v.string()),
-      })
+      }),
     ),
     industry: v.optional(v.string()),
     categories: v.optional(v.array(v.string())),
@@ -32,35 +31,28 @@ export const create = mutation({
         role: v.optional(v.string()),
         email: v.optional(v.string()),
         phone: v.optional(v.string()),
-      })
+      }),
     ),
     justification: v.string(),
     projectName: v.optional(v.string()),
     requestedById: v.optional(v.id("users")),
   },
   handler: async ({ db }, args) => {
-    const {
-      requestedById,
-      ...request
-    } = args;
+    const { requestedById, ...request } = args;
 
-    const fallbackUser = requestedById
-      ? null
-      : await db.query("users").first();
+    const fallbackUser = requestedById ? null : await db.query("users").first();
 
-    const requester =
-      requestedById ??
-      fallbackUser?._id;
+    const requester = requestedById ?? fallbackUser?._id;
 
     if (!requester) {
       throw new Error("Unable to resolve requester for vendor request.");
     }
 
     const cleanedHeadquarters = normalizeObject<HeadquartersInput | undefined>(
-      request.headquarters
+      request.headquarters,
     );
     const cleanedPrimary = normalizeObject<ContactInput | undefined>(
-      request.primaryContact
+      request.primaryContact,
     );
 
     return await db.insert("vendor_requests", {
@@ -75,28 +67,24 @@ export const create = mutation({
 });
 
 export const list = query(async ({ db }) => {
+  const user = await db
+    .query("users")
+    .filter((q) => q.eq(q.field("role"), "buyer"))
+    .first();
 
-  const user = await db.query("users")
-  .filter(q =>
-    q.eq(q.field('role'), 'buyer')
-  ).first()
-
-  const requests = await db.query("vendor_requests")
-  .filter(
-    q => q.eq(q.field("requestedBy"), user?._id)
-  )
-  .collect();
+  const requests = await db
+    .query("vendor_requests")
+    .filter((q) => q.eq(q.field("requestedBy"), user?._id))
+    .collect();
 
   return requests;
 });
 
-
 export const listPending = query(async ({ db }) => {
-  const requests = await db.query("vendor_requests")
-  .filter(
-    q => q.eq(q.field("status"), "pending")
-  )
-  .collect();
+  const requests = await db
+    .query("vendor_requests")
+    .filter((q) => q.eq(q.field("status"), "pending"))
+    .collect();
 
   return requests;
 });

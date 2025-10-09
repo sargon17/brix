@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/empty";
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
-import { Building2, CalendarClock, ClipboardList } from "lucide-react";
+import { Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CreateRequestForm from "../../_components/requests/create-request-form";
 import { dateFormatter } from "@/lib/utils";
@@ -37,14 +37,12 @@ const columns: ColumnDef<VendorRequestRow>[] = [
       const request = row.original;
       return (
         <div className="flex flex-col gap-1">
-          <span className="font-medium text-foreground">
-            {request.name}
-          </span>
+          <span className="font-medium text-foreground">{request.name}</span>
           <span className="text-xs text-muted-foreground">
             {request.justification
               ? request.justification
-                .slice(0, 80)
-                .concat(request.justification.length > 80 ? "..." : "")
+                  .slice(0, 80)
+                  .concat(request.justification.length > 80 ? "..." : "")
               : "No justification provided"}
           </span>
         </div>
@@ -91,7 +89,6 @@ const columns: ColumnDef<VendorRequestRow>[] = [
   },
 ];
 
-
 export default function VendorRequestsTable() {
   const data = useQuery(api.vendorRequests.list);
 
@@ -110,7 +107,6 @@ export default function VendorRequestsTable() {
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
-
 
   return (
     <div className="space-y-4">

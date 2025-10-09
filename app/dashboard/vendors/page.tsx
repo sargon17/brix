@@ -1,4 +1,3 @@
-
 import { ListPlus, MoreHorizontal } from "lucide-react";
 
 import { VendorTable } from "./_components/vendor-table";
@@ -8,7 +7,7 @@ import {
   DashboardContent,
   DashboardHeader,
   DashboardSubtitle,
-  DashboardTitle
+  DashboardTitle,
 } from "@/components/dashboard";
 import { Button } from "@/components/ui/button";
 import CreateRequestForm from "./_components/requests/create-request-form";
@@ -27,10 +26,8 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import Link from "next/link";
-
-
 
 export default function VendorsPage() {
   return (
@@ -56,7 +53,6 @@ export default function VendorsPage() {
                       <DropdownMenuItem>
                         <ListPlus />
                         Past Requests
-
                       </DropdownMenuItem>
                     </Link>
                   </DropdownMenuGroup>
@@ -66,21 +62,16 @@ export default function VendorsPage() {
           </DashboardActions>
         }
       >
-
-        <DashboardTitle>
-          Vendors
-        </DashboardTitle>
+        <DashboardTitle>Vendors</DashboardTitle>
         <DashboardSubtitle>
           Construction Pro Inc.&apos;s active catalog. Review intake requests,
           supplier health, and key contacts in one place to keep procurement
           decisions moving.
         </DashboardSubtitle>
-      </DashboardHeader >
+      </DashboardHeader>
       <DashboardContent>
         <VendorTable />
       </DashboardContent>
-    </Dashboard >
-
-
+    </Dashboard>
   );
 }

@@ -6,7 +6,7 @@ import {
   DashboardContent,
   DashboardHeader,
   DashboardSubtitle,
-  DashboardTitle
+  DashboardTitle,
 } from "@/components/dashboard";
 import VendorRequestsTable from "./_components/vendor-requests-table";
 
@@ -19,24 +19,20 @@ export default function VendorsPage() {
             <CreateRequestForm>
               <Button>Request a vendor</Button>
             </CreateRequestForm>
-          </DashboardActions>}
+          </DashboardActions>
+        }
       >
-
-        <DashboardTitle>
-          Vendor onboard requests
-        </DashboardTitle>
+        <DashboardTitle>Vendor onboard requests</DashboardTitle>
         <DashboardSubtitle>
-          Track all your vendor requests in one place.
-          See every submission you’ve made, check its approval
-          status at a glance, and stay updated on the progress—so
-          you always know what’s moving forward and what needs your attention.
+          Track all your vendor requests in one place. See every submission
+          you’ve made, check its approval status at a glance, and stay updated
+          on the progress—so you always know what’s moving forward and what
+          needs your attention.
         </DashboardSubtitle>
-      </DashboardHeader >
+      </DashboardHeader>
       <DashboardContent>
         <VendorRequestsTable />
       </DashboardContent>
-    </Dashboard >
-
-
+    </Dashboard>
   );
 }

@@ -17,9 +17,10 @@ export default function Home() {
                 Brix.supply take-home by Mykhaylo Tymofyeyev
               </h1>
               <p className="text-base text-muted-foreground sm:text-lg">
-                A focused exploration of the census queue feature for Construction
-                Pro Inc.&apos;s procurement squad—showing how we can help them
-                request new vendors without polluting Brix&apos;s core catalog.
+                A focused exploration of the census queue feature for
+                Construction Pro Inc.&apos;s procurement squad—showing how we
+                can help them request new vendors without polluting Brix&apos;s
+                core catalog.
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
@@ -44,10 +45,7 @@ export default function Home() {
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button asChild>
-                <Link
-                  href="/dashboard/vendors"
-                  prefetch
-                >
+                <Link href="/dashboard/vendors" prefetch>
                   View the vendors concept
                 </Link>
               </Button>
@@ -77,15 +75,13 @@ export default function Home() {
               </p>
             </article>
             <article className="space-y-3 rounded-lg border border-border bg-card/40 p-6 backdrop-blur">
-              <h2 className="text-base font-semibold text-foreground">
-                Task
-              </h2>
+              <h2 className="text-base font-semibold text-foreground">Task</h2>
               <Separator />
               <p>
-                Construction Pro Inc. needs a census queue to submit vendors that
-                aren&apos;t yet in the catalog. The feature should integrate
-                seamlessly with the existing vendor workspace while respecting the
-                integrity of Brix&apos;s core data.
+                Construction Pro Inc. needs a census queue to submit vendors
+                that aren&apos;t yet in the catalog. The feature should
+                integrate seamlessly with the existing vendor workspace while
+                respecting the integrity of Brix&apos;s core data.
               </p>
             </article>
             <article className="space-y-3 rounded-lg border border-border bg-card/40 p-6 backdrop-blur sm:col-span-2">
@@ -94,9 +90,15 @@ export default function Home() {
               </h2>
               <Separator />
               <ul className="list-disc space-y-2 pl-5">
-                <li>Next.js (App Router) with Tailwind for layout and styling</li>
-                <li>Convex backend shaping realtime vendor queue and audit trails</li>
-                <li>TanStack + Zustand to model vendor data and request flows</li>
+                <li>
+                  Next.js (App Router) with Tailwind for layout and styling
+                </li>
+                <li>
+                  Convex backend shaping realtime vendor queue and audit trails
+                </li>
+                <li>
+                  TanStack + Zustand to model vendor data and request flows
+                </li>
                 <li>Shadcn/UI primitives for cohesive interaction patterns</li>
               </ul>
             </article>

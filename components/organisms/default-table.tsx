@@ -8,19 +8,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import {
-  flexRender,
-} from "@tanstack/react-table";
+import { flexRender } from "@tanstack/react-table";
 
 import type { Row, Table as TableType } from "@tanstack/react-table";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 interface DefaultTypeProps<T, R> {
-  data?: R[]
-  table: TableType<T>
-  emptyStateView?: ReactNode
-  onRowClick?: (row: Row<T>) => void
+  data?: R[];
+  table: TableType<T>;
+  emptyStateView?: ReactNode;
+  onRowClick?: (row: Row<T>) => void;
 }
 
 const skeletonRows = Array.from({ length: 4 }, (_, index) => index);
@@ -30,7 +28,6 @@ export default function DefaultTable<T, R>({
   emptyStateView,
   onRowClick,
 }: DefaultTypeProps<T, R>) {
-
   if (data === undefined) {
     return (
       <div className="space-y-3 rounded-lg border border-border bg-card/40 p-4">
@@ -48,9 +45,8 @@ export default function DefaultTable<T, R>({
   }
 
   if (!table.getRowCount()) {
-    return emptyStateView
+    return emptyStateView;
   }
-
 
   return (
     <div className="rounded-lg border border-border bg-card/40">
@@ -62,7 +58,10 @@ export default function DefaultTable<T, R>({
                 <TableHead key={header.id}>
                   {header.isPlaceholder
                     ? null
-                    : flexRender(header.column.columnDef.header, header.getContext())}
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
                 </TableHead>
               ))}
             </TableRow>
@@ -80,7 +79,8 @@ export default function DefaultTable<T, R>({
                   : undefined
               }
               className={cn(
-                onRowClick && "cursor-pointer transition-colors hover:bg-muted/70",
+                onRowClick &&
+                  "cursor-pointer transition-colors hover:bg-muted/70",
               )}
             >
               {row.getVisibleCells().map((cell) => (
@@ -93,5 +93,5 @@ export default function DefaultTable<T, R>({
         </TableBody>
       </Table>
     </div>
-  )
+  );
 }

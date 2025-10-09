@@ -60,7 +60,7 @@ const columns: ColumnDef<VendorRow>[] = [
   },
   {
     header: "VAT number",
-    accessorKey: "vatNumber"
+    accessorKey: "vatNumber",
   },
   {
     header: "Contact",
@@ -83,7 +83,8 @@ const columns: ColumnDef<VendorRow>[] = [
   },
   {
     header: "Headquarter",
-    accessorFn: (val => `${val.headquarters?.city}, ${val.headquarters?.country}`)
+    accessorFn: (val) =>
+      `${val.headquarters?.city}, ${val.headquarters?.country}`,
   },
   {
     header: "Last updated",
@@ -104,12 +105,10 @@ const columns: ColumnDef<VendorRow>[] = [
   },
 ];
 
-
 export function VendorTable() {
   const data = useQuery(api.vendors.list);
   const [selectedVendor, setSelectedVendor] = useState<VendorRow | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
-
 
   const tableData = useMemo<VendorRow[]>(
     () =>
@@ -117,14 +116,14 @@ export function VendorTable() {
         ...row,
         id: String(row._id),
       })),
-    [data]
+    [data],
   );
 
   const table = useReactTable({
     data: tableData,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel()
+    getFilteredRowModel: getFilteredRowModel(),
   });
 
   const handleRowClick = (row: VendorRow) => {
@@ -139,12 +138,9 @@ export function VendorTable() {
     }
   };
 
-
   return (
     <div className="space-y-4">
-      <div
-        className="max-w-xl"
-      >
+      <div className="max-w-xl">
         <Label htmlFor="search">Search Vendor</Label>
         <Input
           id="search"
@@ -152,7 +148,8 @@ export function VendorTable() {
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
-          } />
+          }
+        />
       </div>
 
       <DefaultTable<VendorRow, Doc<"vendors">>
@@ -234,15 +231,23 @@ export function VendorTable() {
                             {selectedVendor.headquarters.addressLine1 ?? "—"}
                           </div>
                           {selectedVendor.headquarters.addressLine2 ? (
-                            <div>{selectedVendor.headquarters.addressLine2}</div>
+                            <div>
+                              {selectedVendor.headquarters.addressLine2}
+                            </div>
                           ) : null}
                           <div>
-                            {[selectedVendor.headquarters.postalCode, selectedVendor.headquarters.city]
+                            {[
+                              selectedVendor.headquarters.postalCode,
+                              selectedVendor.headquarters.city,
+                            ]
                               .filter(Boolean)
                               .join(" ")}
                           </div>
                           <div>
-                            {[selectedVendor.headquarters.region, selectedVendor.headquarters.country]
+                            {[
+                              selectedVendor.headquarters.region,
+                              selectedVendor.headquarters.country,
+                            ]
                               .filter(Boolean)
                               .join(", ") || "—"}
                           </div>
@@ -291,18 +296,18 @@ export function VendorTable() {
   );
 }
 
-
 function EmptyView({ name }: { name: string }) {
   return (
     <div className="h-full content-center ">
-      <Empty >
+      <Empty>
         <EmptyHeader>
           <EmptyMedia variant="icon">
             <Building2 />
           </EmptyMedia>
           <EmptyTitle>Vendor {name} Not Found</EmptyTitle>
           <EmptyDescription>
-            Can't find the vendor you're looking for? You can request it to be added to the catalog..
+            Can't find the vendor you're looking for? You can request it to be
+            added to the catalog..
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
@@ -312,7 +317,7 @@ function EmptyView({ name }: { name: string }) {
             </CreateRequestForm>
           </div>
         </EmptyContent>
-      </Empty >
+      </Empty>
     </div>
-  )
+  );
 }

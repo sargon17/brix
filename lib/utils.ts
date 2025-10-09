@@ -1,10 +1,9 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
-
 
 export const dateFormatter = new Intl.DateTimeFormat("en-US", {
   day: "numeric",
@@ -12,10 +11,8 @@ export const dateFormatter = new Intl.DateTimeFormat("en-US", {
   year: "numeric",
 });
 
-
-
 export function normalizeObject<T extends Record<string, unknown> | undefined>(
-  value: T
+  value: T,
 ) {
   if (!value) {
     return undefined;
@@ -23,9 +20,7 @@ export function normalizeObject<T extends Record<string, unknown> | undefined>(
 
   const filteredEntries = Object.entries(value).filter(
     ([, fieldValue]) =>
-      fieldValue !== undefined &&
-      fieldValue !== null &&
-      fieldValue !== ""
+      fieldValue !== undefined && fieldValue !== null && fieldValue !== "",
   );
 
   if (filteredEntries.length === 0) {

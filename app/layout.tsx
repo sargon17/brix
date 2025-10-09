@@ -2,12 +2,10 @@ import "./globals.css";
 import { Sora } from "next/font/google";
 import type { Metadata } from "next";
 
-
 import { ConvexClientProvider } from "@/components/providers/convex-provider";
 import ThemeProvider from "@/components/providers/theme-provider";
 
-import { Toaster } from "@/components/ui/sonner"
-
+import { Toaster } from "@/components/ui/sonner";
 
 const soraSans = Sora({
   variable: "--font-sora",
@@ -24,12 +22,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${soraSans.variable} antialiased`}
-      >
+      <body className={`${soraSans.variable} antialiased`}>
         <ThemeProvider>
           <ConvexClientProvider>
             <main className="h-svh">
@@ -39,6 +34,6 @@ export default async function RootLayout({
           </ConvexClientProvider>
         </ThemeProvider>
       </body>
-    </html >
+    </html>
   );
 }

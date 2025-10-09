@@ -1,10 +1,9 @@
-
 import {
   Dashboard,
   DashboardContent,
   DashboardHeader,
   DashboardSubtitle,
-  DashboardTitle
+  DashboardTitle,
 } from "@/components/dashboard";
 
 import VendorRequestsTable from "./_components/vendor-request-table";
@@ -12,22 +11,17 @@ import VendorRequestsTable from "./_components/vendor-request-table";
 export default function VendorsPage() {
   return (
     <Dashboard>
-      <DashboardHeader
-      >
-        <DashboardTitle>
-          Vendor onboard requests
-        </DashboardTitle>
+      <DashboardHeader>
+        <DashboardTitle>Vendor onboard requests</DashboardTitle>
         <DashboardSubtitle>
-          Review and manage vendor onboarding requests.
-          As an admin, you can see all submissions,
-          approve or reject them, and keep the process moving smoothly.
+          Review and manage vendor onboarding requests. As an admin, you can see
+          all submissions, approve or reject them, and keep the process moving
+          smoothly.
         </DashboardSubtitle>
-      </DashboardHeader >
+      </DashboardHeader>
       <DashboardContent>
         <VendorRequestsTable />
       </DashboardContent>
-    </Dashboard >
-
-
+    </Dashboard>
   );
 }

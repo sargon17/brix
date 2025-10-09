@@ -70,7 +70,8 @@ export const seed = mutation(async ({ db }) => {
         email: "elliot.rhodes@atlasconcrete.example",
         phone: "+44 161 555 0142",
       },
-      notes: "Fornitore di riferimento per prefabbricati nell'area nord Italia.",
+      notes:
+        "Fornitore di riferimento per prefabbricati nell'area nord Italia.",
       updatedAt: now - DAY * 5,
       createdByEmail: adminEmail,
       updatedByEmail: adminEmail,
@@ -121,7 +122,8 @@ export const seed = mutation(async ({ db }) => {
         email: "joanna.harker@harborsteel.example",
         phone: "+44 151 555 8192",
       },
-      notes: "Specializzati in carpenterie complesse con tempi di consegna ridotti.",
+      notes:
+        "Specializzati in carpenterie complesse con tempi di consegna ridotti.",
       updatedAt: now - DAY * 12,
       createdByEmail: adminEmail,
       updatedByEmail: buyerEmail,
@@ -219,7 +221,8 @@ export const seed = mutation(async ({ db }) => {
         email: "katie.morin@summitinteriors.example",
         phone: "+44 20 5555 7766",
       },
-      notes: "Fornisce lobby su misura per progetti direzionali di fascia alta.",
+      notes:
+        "Fornisce lobby su misura per progetti direzionali di fascia alta.",
       updatedAt: now - DAY * 2,
       createdByEmail: adminEmail,
       updatedByEmail: adminEmail,
@@ -245,7 +248,8 @@ export const seed = mutation(async ({ db }) => {
         email: "harvey.leung@blueriverplumbing.example",
         phone: "+44 115 555 2390",
       },
-      notes: "Gestione completa di centrali termiche e anelli acqua refrigerata.",
+      notes:
+        "Gestione completa di centrali termiche e anelli acqua refrigerata.",
       createdByEmail: buyerEmail,
     },
     {
@@ -361,12 +365,8 @@ export const seed = mutation(async ({ db }) => {
   ];
 
   for (const request of requestSeeds) {
-    const {
-      requestedByEmail,
-      reviewedByEmail,
-      linkedVendorName,
-      ...rest
-    } = request;
+    const { requestedByEmail, reviewedByEmail, linkedVendorName, ...rest } =
+      request;
 
     const requestedBy = userIdByEmail.get(requestedByEmail);
     if (!requestedBy) {

@@ -1,5 +1,5 @@
-import { defineSchema, defineTable } from 'convex/server'
-import { v } from 'convex/values'
+import { defineSchema, defineTable } from "convex/server";
+import { v } from "convex/values";
 
 const vendorIdentityFields = {
   name: v.string(),
@@ -14,7 +14,7 @@ const vendorIdentityFields = {
       region: v.optional(v.string()),
       postalCode: v.optional(v.string()),
       country: v.optional(v.string()),
-    })
+    }),
   ),
 };
 
@@ -31,7 +31,7 @@ const vendorContactFields = {
       role: v.optional(v.string()),
       email: v.optional(v.string()),
       phone: v.optional(v.string()),
-    })
+    }),
   ),
   secondaryContact: v.optional(
     v.object({
@@ -39,7 +39,7 @@ const vendorContactFields = {
       role: v.optional(v.string()),
       email: v.optional(v.string()),
       phone: v.optional(v.string()),
-    })
+    }),
   ),
 };
 
@@ -68,11 +68,7 @@ export default defineSchema({
   users: defineTable({
     name: v.string(),
     email: v.string(),
-    role: v.union(
-      v.literal("buyer"),
-      v.literal("manager"),
-      v.literal("admin")
-    ),
+    role: v.union(v.literal("buyer"), v.literal("manager"), v.literal("admin")),
     avatarUrl: v.optional(v.string()),
   }).index("by_email", ["email"]),
 
@@ -91,7 +87,7 @@ export default defineSchema({
       v.literal("pending"),
       v.literal("reviewing"),
       v.literal("approved"),
-      v.literal("rejected")
+      v.literal("rejected"),
     ),
     reviewedBy: v.optional(v.id("users")),
     reviewedAt: v.optional(v.number()),

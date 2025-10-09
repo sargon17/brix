@@ -15,7 +15,7 @@ import {
   FieldLabel,
   FieldLegend,
   FieldSet,
-} from "@/components/ui/field"
+} from "@/components/ui/field";
 import {
   Dialog,
   DialogClose,
@@ -32,8 +32,7 @@ import { api } from "@/convex/_generated/api";
 import type { DeepKeys } from "@tanstack/react-table";
 import { Textarea } from "@/components/ui/textarea";
 
-
-import { toast } from "sonner"
+import { toast } from "sonner";
 
 const vendorRequestSchema = type({
   name: "string>2",
@@ -58,13 +57,11 @@ const vendorRequestSchema = type({
   justification: "string>20",
 });
 
-
-type FormValue = typeof vendorRequestSchema.infer
+type FormValue = typeof vendorRequestSchema.infer;
 
 type PayloadType = Omit<typeof vendorRequestSchema.infer, "categories"> & {
-  categories: string[] | undefined
-}
-
+  categories: string[] | undefined;
+};
 
 const defaultValues: FormValue = {
   name: "",
@@ -90,9 +87,7 @@ const defaultValues: FormValue = {
 };
 const textFieldLabelClassName = "flex items-center justify-between";
 
-
-
-interface CreateRequestFormProps extends PropsWithChildren { }
+interface CreateRequestFormProps extends PropsWithChildren {}
 
 export default function CreateRequestForm({
   children,
@@ -101,31 +96,29 @@ export default function CreateRequestForm({
   const [open, setOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
 
-
   const form = useForm({
     defaultValues,
     onSubmit: async ({ value, formApi }) => {
       const payload = mapFormValuesToPayload(value);
 
-
       try {
         await createRequest(payload);
         formApi.reset();
         setOpen(false);
-        toast.info("Vendor onboarding request submitted successfully")
+        toast.info("Vendor onboarding request submitted successfully");
       } catch (error) {
         const message =
           error instanceof Error
             ? error.message
             : "We cannot create the request right now.";
 
-        toast.error(message)
+        toast.error(message);
         throw error;
       }
     },
     validators: {
-      onChange: vendorRequestSchema
-    }
+      onChange: vendorRequestSchema,
+    },
   });
 
   const isSubmitting = form.state.isSubmitting;
@@ -211,7 +204,6 @@ export default function CreateRequestForm({
       )}
     </form.Field>
   );
-
 
   const identityFields: TextFieldConfig[] = [
     {
@@ -393,7 +385,6 @@ export default function CreateRequestForm({
     }
   };
 
-
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -468,19 +459,20 @@ export default function CreateRequestForm({
           </DialogFooter>
         </form>
       </DialogContent>
-    </Dialog >
+    </Dialog>
   );
 }
 
-
 function mapFormValuesToPayload(values: FormValue): PayloadType {
-  const categories = values.categories ? values.categories
-    .split(",")
-    .map((entry) => entry.trim())
-    .filter(Boolean) : undefined;
+  const categories = values.categories
+    ? values.categories
+        .split(",")
+        .map((entry) => entry.trim())
+        .filter(Boolean)
+    : undefined;
 
   return {
     ...values,
-    categories
+    categories,
   };
 }

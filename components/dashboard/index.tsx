@@ -5,16 +5,13 @@ import DashboardActions from "./actions";
 import DashboardSubtitle from "./subtitle";
 import DashboardContent from "./content";
 
-
-interface DashboardProps extends PropsWithChildren {
-
-}
+interface DashboardProps extends PropsWithChildren {}
 function Dashboard({ children }: DashboardProps) {
   return (
     <section className="flex flex-col gap-8 p-6 pb-16 h-full">
       {children}
     </section>
-  )
+  );
 }
 
 export {
@@ -23,5 +20,5 @@ export {
   DashboardTitle,
   DashboardSubtitle,
   DashboardActions,
-  DashboardContent
-}
+  DashboardContent,
+};
