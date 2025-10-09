@@ -1,8 +1,8 @@
 "use client";
 import { DollarSign, Laptop2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useProfileStore } from "@/store/profile-store";
-import { useEffect, useState } from "react";
 
 export default function ProfileSwitcher() {
   const { profile, setProfile } = useProfileStore((state) => state);

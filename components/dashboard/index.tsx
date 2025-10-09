@@ -1,9 +1,9 @@
 import type { PropsWithChildren } from "react";
-import DashboardHeader from "./header";
-import DashboardTitle from "./title";
 import DashboardActions from "./actions";
-import DashboardSubtitle from "./subtitle";
 import DashboardContent from "./content";
+import DashboardHeader from "./header";
+import DashboardSubtitle from "./subtitle";
+import DashboardTitle from "./title";
 
 interface DashboardProps extends PropsWithChildren {}
 function Dashboard({ children }: DashboardProps) {

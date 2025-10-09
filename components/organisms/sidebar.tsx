@@ -1,7 +1,7 @@
 "use client";
 
 import { Building2, Home } from "lucide-react";
-
+import Link from "next/link";
 import {
   Sidebar,
   SidebarContent,
@@ -14,10 +14,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import ThemeTabs from "./theme-tabs";
-import Link from "next/link";
-import ProfileSwitcher from "./profile-switcher";
 import { useProfileStore } from "@/store/profile-store";
+import ProfileSwitcher from "./profile-switcher";
+import ThemeTabs from "./theme-tabs";
 
 const commonMenu = [
   {

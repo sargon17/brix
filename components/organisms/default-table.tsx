@@ -1,3 +1,6 @@
+import type { Row, Table as TableType } from "@tanstack/react-table";
+import { flexRender } from "@tanstack/react-table";
+import type { ReactNode } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -7,11 +10,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-import { flexRender } from "@tanstack/react-table";
-
-import type { Row, Table as TableType } from "@tanstack/react-table";
-import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 interface DefaultTypeProps<T, R> {

@@ -1,7 +1,7 @@
-import { normalizeObject } from "@/lib/utils";
-import { Doc } from "./_generated/dataModel";
-import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { normalizeObject } from "@/lib/utils";
+import type { Doc } from "./_generated/dataModel";
+import { mutation, query } from "./_generated/server";
 
 type HeadquartersInput = Doc<"vendor_requests">["headquarters"];
 type ContactInput = Doc<"vendor_requests">["primaryContact"];
@@ -127,7 +127,7 @@ export const updateStatus = mutation({
       let linkedVendorId = request.linkedVendorId;
 
       if (!linkedVendorId) {
-        const newVendor: Omit<Doc<"vendors">, "_id"> = {
+        const newVendor: Omit<Doc<"vendors">, "_id" | "_creationTime"> = {
           name: request.name,
           vatNumber: request.vatNumber,
           registrationId: request.registrationId,

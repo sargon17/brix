@@ -1,6 +1,5 @@
 import { ListPlus, MoreHorizontal } from "lucide-react";
-
-import { VendorTable } from "./_components/vendor-table";
+import Link from "next/link";
 import {
   Dashboard,
   DashboardActions,
@@ -10,24 +9,18 @@ import {
   DashboardTitle,
 } from "@/components/dashboard";
 import { Button } from "@/components/ui/button";
-import CreateRequestForm from "./_components/requests/create-request-form";
 import { ButtonGroup } from "@/components/ui/button-group";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import Link from "next/link";
+import CreateRequestForm from "./_components/requests/create-request-form";
+import { VendorTable } from "./_components/vendor-table";
 
 export default function VendorsPage() {
   return (

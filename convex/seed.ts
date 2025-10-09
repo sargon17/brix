@@ -1,5 +1,5 @@
-import { mutation } from "./_generated/server";
 import type { Doc, Id } from "./_generated/dataModel";
+import { mutation } from "./_generated/server";
 
 const DAY = 1000 * 60 * 60 * 24;
 

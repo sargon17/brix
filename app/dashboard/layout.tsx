@@ -1,12 +1,7 @@
 import { cookies } from "next/headers";
-
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/organisms/sidebar";
 import { ConvexClientProvider } from "@/components/providers/convex-provider";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export default async function RootLayout({
   children,
