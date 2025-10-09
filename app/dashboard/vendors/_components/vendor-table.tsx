@@ -1,7 +1,7 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   getCoreRowModel,
   getFilteredRowModel,
@@ -19,9 +19,19 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty"
+} from "@/components/ui/empty";
 import { Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { dateFormatter } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
@@ -97,6 +107,8 @@ const columns: ColumnDef<VendorRow>[] = [
 
 export function VendorTable() {
   const data = useQuery(api.vendors.list);
+  const [selectedVendor, setSelectedVendor] = useState<VendorRow | null>(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
 
   const tableData = useMemo<VendorRow[]>(
@@ -114,6 +126,18 @@ export function VendorTable() {
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel()
   });
+
+  const handleRowClick = (row: VendorRow) => {
+    setSelectedVendor(row);
+    setDetailsOpen(true);
+  };
+
+  const handleDialogOpenChange = (nextOpen: boolean) => {
+    setDetailsOpen(nextOpen);
+    if (!nextOpen) {
+      setSelectedVendor(null);
+    }
+  };
 
 
   return (
@@ -134,6 +158,7 @@ export function VendorTable() {
       <DefaultTable<VendorRow, Doc<"vendors">>
         data={data}
         table={table}
+        onRowClick={(row) => handleRowClick(row.original)}
         emptyStateView={
           <EmptyView
             name={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
@@ -141,6 +166,127 @@ export function VendorTable() {
         }
       />
 
+      <Dialog open={detailsOpen} onOpenChange={handleDialogOpenChange}>
+        <DialogContent className="md:min-w-[560px]">
+          {selectedVendor ? (
+            <>
+              <DialogHeader>
+                <DialogTitle>{selectedVendor.name}</DialogTitle>
+                <DialogDescription>
+                  Detailed information about this vendor.
+                </DialogDescription>
+              </DialogHeader>
+              <ScrollArea className="max-h-[60vh] pr-4">
+                <div className="space-y-6 pt-2">
+                  <section className="space-y-2">
+                    <h3 className="text-sm font-semibold text-muted-foreground">
+                      Company
+                    </h3>
+                    <dl className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
+                      <div>
+                        <dt className="text-muted-foreground">VAT number</dt>
+                        <dd>{selectedVendor.vatNumber ?? "—"}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-muted-foreground">Industry</dt>
+                        <dd>{selectedVendor.industry ?? "—"}</dd>
+                      </div>
+                      <div className="sm:col-span-2">
+                        <dt className="text-muted-foreground">Categories</dt>
+                        <dd>
+                          {selectedVendor.categories?.length
+                            ? selectedVendor.categories.join(" · ")
+                            : "—"}
+                        </dd>
+                      </div>
+                      <div className="sm:col-span-2">
+                        <dt className="text-muted-foreground">Website</dt>
+                        <dd>
+                          {selectedVendor.website ? (
+                            <a
+                              href={
+                                selectedVendor.website.startsWith("http")
+                                  ? selectedVendor.website
+                                  : `https://${selectedVendor.website}`
+                              }
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-primary underline"
+                            >
+                              {selectedVendor.website}
+                            </a>
+                          ) : (
+                            "—"
+                          )}
+                        </dd>
+                      </div>
+                    </dl>
+                  </section>
+
+                  <section className="space-y-2">
+                    <h3 className="text-sm font-semibold text-muted-foreground">
+                      Headquarters
+                    </h3>
+                    <div className="rounded-md border border-border bg-muted/30 p-4 text-sm leading-relaxed">
+                      {selectedVendor.headquarters ? (
+                        <>
+                          <div>
+                            {selectedVendor.headquarters.addressLine1 ?? "—"}
+                          </div>
+                          {selectedVendor.headquarters.addressLine2 ? (
+                            <div>{selectedVendor.headquarters.addressLine2}</div>
+                          ) : null}
+                          <div>
+                            {[selectedVendor.headquarters.postalCode, selectedVendor.headquarters.city]
+                              .filter(Boolean)
+                              .join(" ")}
+                          </div>
+                          <div>
+                            {[selectedVendor.headquarters.region, selectedVendor.headquarters.country]
+                              .filter(Boolean)
+                              .join(", ") || "—"}
+                          </div>
+                        </>
+                      ) : (
+                        "—"
+                      )}
+                    </div>
+                  </section>
+
+                  <section className="space-y-2">
+                    <h3 className="text-sm font-semibold text-muted-foreground">
+                      Primary contact
+                    </h3>
+                    <dl className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
+                      <div>
+                        <dt className="text-muted-foreground">Name</dt>
+                        <dd>{selectedVendor.primaryContact?.name ?? "—"}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-muted-foreground">Role</dt>
+                        <dd>{selectedVendor.primaryContact?.role ?? "—"}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-muted-foreground">Email</dt>
+                        <dd>{selectedVendor.primaryContact?.email ?? "—"}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-muted-foreground">Phone</dt>
+                        <dd>{selectedVendor.primaryContact?.phone ?? "—"}</dd>
+                      </div>
+                    </dl>
+                  </section>
+                </div>
+              </ScrollArea>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button variant="outline">Close</Button>
+                </DialogClose>
+              </DialogFooter>
+            </>
+          ) : null}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

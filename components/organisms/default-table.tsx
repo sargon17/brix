@@ -12,17 +12,24 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 
-import type { Table as TableType } from "@tanstack/react-table";
+import type { Row, Table as TableType } from "@tanstack/react-table";
 import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 interface DefaultTypeProps<T, R> {
   data?: R[]
   table: TableType<T>
   emptyStateView?: ReactNode
+  onRowClick?: (row: Row<T>) => void
 }
 
 const skeletonRows = Array.from({ length: 4 }, (_, index) => index);
-export default function DefaultTable<T, R>({ data, table, emptyStateView }: DefaultTypeProps<T, R>) {
+export default function DefaultTable<T, R>({
+  data,
+  table,
+  emptyStateView,
+  onRowClick,
+}: DefaultTypeProps<T, R>) {
 
   if (data === undefined) {
     return (
@@ -63,7 +70,19 @@ export default function DefaultTable<T, R>({ data, table, emptyStateView }: Defa
         </TableHeader>
         <TableBody className="*:odd:bg-zinc-50 *:odd:hover:bg-zinc-100 *:odd:dark:bg-zinc-900 dark:*:odd:hover:bg-zinc-800">
           {table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id}>
+            <TableRow
+              key={row.id}
+              onClick={
+                onRowClick
+                  ? () => {
+                      onRowClick(row);
+                    }
+                  : undefined
+              }
+              className={cn(
+                onRowClick && "cursor-pointer transition-colors hover:bg-muted/70",
+              )}
+            >
               {row.getVisibleCells().map((cell) => (
                 <TableCell key={cell.id}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}

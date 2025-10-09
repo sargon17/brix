@@ -24,10 +24,11 @@ import { Building2, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn, dateFormatter } from "@/lib/utils";
 import DefaultTable from "@/components/organisms/default-table";
-import { ButtonGroup } from "@/components/ui/button-group";
 import { Tooltip, TooltipContent } from "@/components/ui/tooltip";
 import { TooltipTrigger } from "@radix-ui/react-tooltip";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 
 type VendorRequestRow = Doc<"vendor_requests">;
 const STATUS_FILTERS = ["all", "pending", "reviewing", "approved", "rejected"] as const;
@@ -126,35 +127,34 @@ export default function VendorRequestsTable() {
 
           return (
             <div className="flex space-x-2">
-              <ButtonGroup>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="icon-sm"
-                      onClick={() => handleDecision(requestId, "approved")}
-                      disabled={isProcessing || isResolved}
-                    >
-                      <Check className="h-4 w-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Approve</TooltipContent>
-                </Tooltip>
 
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="icon-sm"
-                      onClick={() => handleDecision(requestId, "rejected")}
-                      disabled={isProcessing || isResolved}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Reject</TooltipContent>
-                </Tooltip>
-              </ButtonGroup>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon-sm"
+                    onClick={() => handleDecision(requestId, "approved")}
+                    disabled={isProcessing || isResolved}
+                  >
+                    <Check className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Approve</TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon-sm"
+                    onClick={() => handleDecision(requestId, "rejected")}
+                    disabled={isProcessing || isResolved}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Reject</TooltipContent>
+              </Tooltip>
 
               <Button variant="outline" size="sm" disabled={isProcessing}>
                 Edit
@@ -194,48 +194,44 @@ export default function VendorRequestsTable() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="max-w-xl">
-          <Label htmlFor="search">Search Requests</Label>
-          <Input
-            id="search"
-            placeholder="Vendor name"
-            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn("name")?.setFilterValue(event.target.value)
-            }
-          />
-        </div>
-
-        <div className="flex flex-col ">
-          <Label >
-            Status
-          </Label>
-          <ButtonGroup>
-            {STATUS_FILTERS.map((filter) => (
-              <Button
-                key={filter}
-                variant={statusFilter === filter ? "default" : "outline"}
-                onClick={() => setStatusFilter(filter)}
-              >
-                {filter === "all"
-                  ? "All"
-                  : filter.charAt(0).toUpperCase() + filter.slice(1)}
-              </Button>
-            ))}
-          </ButtonGroup>
-        </div>
+      <div className="max-w-xl">
+        <Label htmlFor="search">Search Requests</Label>
+        <Input
+          id="search"
+          placeholder="Vendor name"
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("name")?.setFilterValue(event.target.value)
+          }
+        />
       </div>
 
-      <DefaultTable<VendorRequestRow, Doc<"vendor_requests">>
-        data={data}
-        table={table}
-        emptyStateView={
-          <EmptyView
-            name={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+      <Tabs
+        value={statusFilter}
+        onValueChange={(value) => setStatusFilter(value as StatusFilter)}
+        className="space-y-4"
+      >
+        <TabsList className="ml-auto">
+          {STATUS_FILTERS.map((filter) => (
+            <TabsTrigger key={filter} value={filter}>
+              {filter === "all"
+                ? "All"
+                : filter.charAt(0).toUpperCase() + filter.slice(1)}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        <TabsContent value={statusFilter} className="m-0 p-0">
+          <DefaultTable<VendorRequestRow, Doc<"vendor_requests">>
+            data={data}
+            table={table}
+            emptyStateView={
+              <EmptyView
+                name={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+              />
+            }
           />
-        }
-      />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
