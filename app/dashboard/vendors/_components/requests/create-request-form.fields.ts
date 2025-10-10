@@ -1,5 +1,6 @@
 import type { useForm } from "@tanstack/react-form";
 import { type } from "arktype";
+import type { Step } from "@/components/organisms/stepped-form";
 import type {
   TextAreaConfig,
   TextFieldConfig,
@@ -29,6 +30,10 @@ export const vendorRequestSchema = type({
 });
 
 export type FormValue = typeof vendorRequestSchema.infer;
+interface StepDataConfig extends Omit<Step<FormValue>, "render" > {
+  fieldSet: StepConfig[];
+  variant: "textfield" | "textarea";
+}
 
 export const defaultValues: FormValue = {
   name: "",
@@ -153,7 +158,7 @@ const justificationField: TextAreaStepConfig = {
   placeholder: "Describe why this vendor is critical for the project.",
 };
 
-export const stepsData = [
+export const stepsData: StepDataConfig[] = [
   {
     id: "company-data",
     title: "Company data",

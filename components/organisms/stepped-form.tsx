@@ -5,7 +5,7 @@ import type { FormUtilType } from "@/lib/form-building-helpers";
 import { Button } from "../ui/button";
 import { FieldDescription, FieldLegend, FieldSet } from "../ui/field";
 
-type StepConfig<V> = {
+export type Step<V> = {
   id: string;
   title: string;
   description: string;
@@ -14,7 +14,7 @@ type StepConfig<V> = {
 };
 
 interface SteppedFormProps<V, T> extends PropsWithChildren {
-  steps: StepConfig<V>[];
+  steps: Step<V>[];
   form: T extends ReturnType<typeof useForm> ? T : FormUtilType;
 }
 export default function SteppedForm<V, T>({
@@ -23,7 +23,7 @@ export default function SteppedForm<V, T>({
 }: SteppedFormProps<V, T>) {
   const stepper = useStepper(steps.length);
 
-  const validateStep = async (step: StepConfig<V>) => {
+  const validateStep = async (step: Step<V>) => {
     let hasErrors = false;
     for (const field of step.fields) {
       await form.validateField(field, "change");
