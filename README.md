@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Objectives
 
-## Getting Started
+- Extend the vendors workspace with a “census queue” so procurement can request vendors that are missing from the catalog.
+- Keep the existing dashboard layout intact while introducing low-friction entry points for the new workflow.
+- Model the full flow end to end—typed forms, data normalization, Convex persistence, and admin resolution—so the feature feels production ready.
 
-First, run the development server:
+## Implementation highlights
+
+- **Multi-step intake form** (TanStack Form + ArkType) validates vendor identity, location, contacts, and justification before submission.
+- **Convex mutations/queries** handle request creation, filtering, and admin decisions while normalizing optional fields to prevent data pollution.
+- **Domain-focused seeding** ships with buyer/admin personas and realistic vendor data so the experience works out of the box and mirrors real usage.
+- **Reusable dashboard primitives** (tables, empty states, sidebar, stepped form) keep the UI consistent and make it easy to extend follow-up features.
+
+## Profile switching
+
+The sidebar toggle simply swaps between the seeded buyer/admin personas stored in Zustand. It is intentionally lightweight—there is no authentication layer or authorization logic implied. The switch exists purely for demo purposes so you can preview both sides of the workflow without managing accounts.
+
+## Interaction notes
+
+The “Request vendor” button at the top-right of the vendors view is intentionally high-visibility to support a quick walkthrough. In a production setting the entry point would likely live in the empty state (as already shown) or inside a secondary menu, since the primary dashboard focus remains catalog browsing rather than vendor intake.
+
+## Local development
+
+The repository is wired to a hosted Convex deployment for convenience. With Bun v1.1 or newer:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
+# 1. Install dependencies
+bun install
+
+# 2. Copy the example environment file (already points to the hosted Convex instance)
+cp .env.example .env.local
+
+# 3. Start the Next.js dev server
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit [http://localhost:3000](http://localhost:3000) to explore the census queue flow. The sidebar profile toggle lets you move between the buyer intake and admin review experiences.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Optional: run Convex locally
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+If you prefer to spin up Convex on your machine instead of relying on the hosted deployment:
 
-## Learn More
+```bash
+# Install the Convex CLI if you don't already have it
+bunx convex --help
 
-To learn more about Next.js, take a look at the following resources:
+# Start the local Convex dev server (runs on http://localhost:3188)
+bunx convex dev
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# In another terminal, seed the local database
+bunx convex run seed
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Then update `.env.local` so `NEXT_PUBLIC_CONVEX_URL` points to the URL printed by `convex dev` (usually `http://127.0.0.1:3188`). Restart `bun dev` afterwards.
