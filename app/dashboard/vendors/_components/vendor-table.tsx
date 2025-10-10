@@ -34,7 +34,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { dateFormatter } from "@/lib/utils";
-import CreateRequestForm from "./requests/create-request-form";
+import VendorRequestForm from "./requests/vendor-request-form";
 
 type VendorRow = Doc<"vendors">;
 
@@ -310,9 +310,9 @@ function EmptyView({ name }: { name: string }) {
         </EmptyHeader>
         <EmptyContent>
           <div className="flex">
-            <CreateRequestForm>
+            <VendorRequestForm>
               <Button>Request a Vendor Onboarding</Button>
-            </CreateRequestForm>
+            </VendorRequestForm>
           </div>
         </EmptyContent>
       </Empty>

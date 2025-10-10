@@ -24,7 +24,7 @@ import { Input } from "@/components/ui/input";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import { dateFormatter } from "@/lib/utils";
-import CreateRequestForm from "../../_components/requests/create-request-form";
+import VendorRequestForm from "../../_components/requests/vendor-request-form";
 
 type VendorRequestRow = Doc<"vendor_requests">;
 
@@ -152,9 +152,9 @@ function EmptyView({ name }: { name: string }) {
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
-          <CreateRequestForm>
+          <VendorRequestForm>
             <Button>Request a Vendor Onboarding</Button>
-          </CreateRequestForm>
+          </VendorRequestForm>
         </EmptyContent>
       </Empty>
     </div>

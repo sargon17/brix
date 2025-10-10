@@ -7,7 +7,7 @@ import {
   DashboardTitle,
 } from "@/components/dashboard";
 import { Button } from "@/components/ui/button";
-import CreateRequestForm from "../_components/requests/create-request-form";
+import VendorRequestForm from "../_components/requests/vendor-request-form";
 import VendorRequestsTable from "./_components/vendor-requests-table";
 
 export default function VendorsPage() {
@@ -16,9 +16,9 @@ export default function VendorsPage() {
       <DashboardHeader
         actionChildren={
           <DashboardActions>
-            <CreateRequestForm>
+            <VendorRequestForm>
               <Button>Request a vendor</Button>
-            </CreateRequestForm>
+            </VendorRequestForm>
           </DashboardActions>
         }
       >

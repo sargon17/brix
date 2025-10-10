@@ -1,73 +1,44 @@
-import type { useForm } from "@tanstack/react-form";
-import { type } from "arktype";
-import type { Step } from "@/components/organisms/stepped-form";
-import type {
-  TextAreaConfig,
-  TextFieldConfig,
-} from "@/lib/form-building-helpers";
+import type { DeepKeys } from "@tanstack/react-form";
 
-export const vendorRequestSchema = type({
-  name: "string>2",
-  vatNumber: "string?",
-  website: "string?",
-  industry: "string?",
-  categories: "string?",
-  "headquarters?": {
-    addressLine1: "string?",
-    addressLine2: "string?",
-    city: "string?",
-    region: "string?",
-    postalCode: "string?",
-    country: "string?",
-  },
-  "primaryContact?": {
-    name: "string",
-    role: "string?",
-    email: "string?",
-    phone: "string?",
-  },
-  justification: "string>20",
-});
+import type { VendorRequestFormValue } from "./vendor-request-form.schema";
 
-export type FormValue = typeof vendorRequestSchema.infer;
-interface StepDataConfig extends Omit<Step<FormValue>, "render" > {
-  fieldSet: StepConfig[];
-  variant: "textfield" | "textarea";
-}
-
-export const defaultValues: FormValue = {
-  name: "",
-  vatNumber: "",
-  website: "",
-  industry: "",
-  categories: "",
-  headquarters: {
-    addressLine1: "",
-    addressLine2: "",
-    city: "",
-    region: "",
-    postalCode: "",
-    country: "",
-  },
-  primaryContact: {
-    name: "",
-    role: "",
-    email: "",
-    phone: "",
-  },
-  justification: "",
+export type TextFieldDefinition = {
+  name: DeepKeys<VendorRequestFormValue>;
+  label: string;
+  placeholder?: string;
+  required?: boolean;
+  description?: string;
 };
 
-type StepConfig = Omit<
-  TextFieldConfig<ReturnType<typeof useForm>, FormValue>,
-  "form"
->;
-type TextAreaStepConfig = Omit<
-  TextAreaConfig<ReturnType<typeof useForm>, FormValue>,
-  "form"
->;
+export type TextAreaDefinition = {
+  name: DeepKeys<VendorRequestFormValue>;
+  label: string;
+  placeholder?: string;
+  minRows?: number;
+};
 
-const identityFields: StepConfig[] = [
+type BaseStepDefinition = {
+  id: string;
+  title: string;
+  description: string;
+  fields: ReadonlyArray<DeepKeys<VendorRequestFormValue>>;
+};
+
+type TextFieldStepDefinition = BaseStepDefinition & {
+  variant: "textfield";
+  fieldSet: ReadonlyArray<TextFieldDefinition>;
+};
+
+type TextAreaStepDefinition = BaseStepDefinition & {
+  variant: "textarea";
+  fieldSet: ReadonlyArray<TextAreaDefinition>;
+};
+
+export type VendorRequestStepDefinition =
+  | TextFieldStepDefinition
+  | TextAreaStepDefinition;
+
+const identityFields: ReadonlyArray<TextFieldDefinition> = [
   {
     name: "name",
     label: "Legal name",
@@ -94,9 +65,9 @@ const identityFields: StepConfig[] = [
     label: "Categories (comma separated)",
     placeholder: "e.g. Concrete, Aggregates",
   },
-];
+] as const;
 
-const headquartersFields: StepConfig[] = [
+const headquartersFields: ReadonlyArray<TextFieldDefinition> = [
   {
     name: "headquarters.addressLine1",
     label: "Address line 1",
@@ -127,9 +98,9 @@ const headquartersFields: StepConfig[] = [
     label: "Country",
     placeholder: "e.g. Italy",
   },
-];
+] as const;
 
-const primaryContactFields: StepConfig[] = [
+const primaryContactFields: ReadonlyArray<TextFieldDefinition> = [
   {
     name: "primaryContact.name",
     label: "Primary contact",
@@ -150,15 +121,15 @@ const primaryContactFields: StepConfig[] = [
     label: "Phone",
     placeholder: "e.g. +39 ...",
   },
-];
+] as const;
 
-const justificationField: TextAreaStepConfig = {
+const justificationField: TextAreaDefinition = {
   name: "justification",
   label: "Notes for Brix reviewer",
   placeholder: "Describe why this vendor is critical for the project.",
 };
 
-export const stepsData: StepDataConfig[] = [
+export const vendorRequestSteps: ReadonlyArray<VendorRequestStepDefinition> = [
   {
     id: "company-data",
     title: "Company data",
@@ -188,8 +159,8 @@ export const stepsData: StepDataConfig[] = [
     title: "Request context",
     description:
       "Explain why the vendor should be added and how it relates to your projects.",
-    fields: ["justification"] as const,
+    fields: [justificationField.name],
     fieldSet: [justificationField],
     variant: "textarea",
   },
-];
+] as const;

@@ -1,11 +1,12 @@
-import type { DeepKeys, useForm } from "@tanstack/react-form";
-import type { JSX, PropsWithChildren } from "react";
+import type { DeepKeys, ReactFormExtendedApi } from "@tanstack/react-form";
+import type { JSX } from "react";
+
 import { useStepper } from "@/hooks/use-stepper";
-import type { FormUtilType } from "@/lib/form-building-helpers";
+
 import { Button } from "../ui/button";
 import { FieldDescription, FieldLegend, FieldSet } from "../ui/field";
 
-export type Step<V> = {
+type StepConfig<V> = {
   id: string;
   title: string;
   description: string;
@@ -13,17 +14,38 @@ export type Step<V> = {
   render: () => JSX.Element;
 };
 
-interface SteppedFormProps<V, T> extends PropsWithChildren {
-  steps: Step<V>[];
-  form: T extends ReturnType<typeof useForm> ? T : FormUtilType;
+// biome-ignore-start lint/suspicious/noExplicitAny: left broad for generics to work with the form api type
+type GenericFormApi<V> = ReactFormExtendedApi<
+  V,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any
+>;
+// biome-ignore-end lint/suspicious/noExplicitAny: left broad for generics to work with the form api type
+
+interface SteppedFormProps<
+  V,
+  TForm extends GenericFormApi<V> = GenericFormApi<V>,
+> {
+  steps: StepConfig<V>[];
+  form: TForm;
 }
-export default function SteppedForm<V, T>({
-  steps,
-  form,
-}: SteppedFormProps<V, T>) {
+
+export default function SteppedForm<
+  V,
+  TForm extends GenericFormApi<V> = GenericFormApi<V>,
+>({ steps, form }: SteppedFormProps<V, TForm>) {
   const stepper = useStepper(steps.length);
 
-  const validateStep = async (step: Step<V>) => {
+  const validateStep = async (step: StepConfig<V>) => {
     let hasErrors = false;
     for (const field of step.fields) {
       await form.validateField(field, "change");

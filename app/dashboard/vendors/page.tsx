@@ -19,7 +19,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import CreateRequestForm from "./_components/requests/create-request-form";
+import VendorRequestForm from "./_components/requests/vendor-request-form";
 import { VendorTable } from "./_components/vendor-table";
 
 export default function VendorsPage() {
@@ -29,9 +29,9 @@ export default function VendorsPage() {
         actionChildren={
           <DashboardActions>
             <ButtonGroup>
-              <CreateRequestForm>
+              <VendorRequestForm>
                 <Button>Request a vendor</Button>
-              </CreateRequestForm>
+              </VendorRequestForm>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline">
